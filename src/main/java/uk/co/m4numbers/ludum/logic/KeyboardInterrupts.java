@@ -62,11 +62,12 @@ public class KeyboardInterrupts {
                     break;
                 case RIGHT:
                     LudumMain.horizontalVelocity = 2;
-                   // LudumMain.sprites[2].setTextureRect(new IntRect(0, 0, 24, 24));
                     break;
                 case LEFT:
                     LudumMain.horizontalVelocity = -2;
-                   // LudumMain.sprites[2].setTextureRect(new IntRect(24, 0, -24, 24));
+                    break;
+                case SPACE:
+                    LudumMain.currentLevel.player.bite();
             }
 
             if (LudumMain.verticalVelocity != 0 && LudumMain.horizontalVelocity != 0) {

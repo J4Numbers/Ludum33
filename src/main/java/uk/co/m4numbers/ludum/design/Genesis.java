@@ -194,8 +194,8 @@ public class Genesis {
                         );
                     }
 
-                    textureMap.put(5, LudumMain.textures.get("character.png"));
-                    textureMap.put(10, LudumMain.textures.get("enemy_0.png"));
+                    textureMap.put(5, LudumMain.textures.get("player.png"));
+                    textureMap.put(10, LudumMain.textures.get("tourist.png"));
                     textureMap.put(11, LudumMain.textures.get("enemy_1.png"));
                     textureMap.put(12, LudumMain.textures.get("enemy_2.png"));
 

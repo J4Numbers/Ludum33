@@ -37,7 +37,7 @@ public abstract class Enemy {
 
     protected void calculateVision() {
 
-        int rot=0;
+        int rot=-1;
         if (verVel < 0) {
             rot = 0;
         } else
@@ -49,6 +49,13 @@ public abstract class Enemy {
         } else
         if (horVel < 0) {
             rot = 3;
+        }
+
+        if (rot == -1) {
+            rot = 0;
+            LudumMain.currentLevel.stopFrame(actor);
+        } else {
+            LudumMain.currentLevel.nextFrame(actor, 1);
         }
         this.visionCone = new ConeShape(actor.getPosition(), range, rot*90, biVisAng, 31, terrorLevel);
         this.actor.setRotation(rot * 90f);

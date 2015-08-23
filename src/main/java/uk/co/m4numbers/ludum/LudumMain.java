@@ -91,7 +91,7 @@ public class LudumMain {
                     moveAssist += elapse.asSeconds();
 
 
-                    currentLevel.movePlayerCharacter(horizontalVelocity, verticalVelocity, fpsSmoothing);
+                    currentLevel.player.movePlayerCharacter(horizontalVelocity, verticalVelocity, fpsSmoothing);
                     for (Enemy e : currentLevel.enemySet) {
                         moveAssist = e.move(fpsSmoothing, moveAssist);
                     }

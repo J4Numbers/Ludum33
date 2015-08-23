@@ -38,10 +38,10 @@ public class Level {
     private Map<Pair, Integer> levelMap;
     private Map<Integer, Texture> textureMap;
     private Map<Pair, Integer> enemyMap;
-    private Set<Sprite> floorSet;
-    private Set<Sprite> wallSet;
 
-    public Sprite player;
+    public Set<Sprite> floorSet;
+    public Set<Sprite> wallSet;
+    public Player player;
     public Set<Enemy> enemySet;
 
     public Level(
@@ -55,16 +55,7 @@ public class Level {
         this.wallSet = new HashSet<Sprite>();
         this.enemySet = new HashSet<Enemy>();
 
-        this.player = new Sprite(textureMap.get(5));
-        this.player.setScale(LudumMain.scalingConst, LudumMain.scalingConst);
-        this.player.setOrigin(new Vector2f(
-                this.player.getLocalBounds().width / 2,
-                this.player.getLocalBounds().height / 2
-        ));
-        this.player.setPosition(new Vector2f(
-                charStart.x * (16 * LudumMain.scalingConst) + (16 * LudumMain.scalingConst) / 2,
-                charStart.y * (16 * LudumMain.scalingConst) + (16 * LudumMain.scalingConst) / 2
-        ));
+        this.player = new Player(new Sprite(textureMap.get(5), new IntRect(0, 0, 8, 8)), charStart);
 
         System.out.printf(
                 "There are %d entries in the level, and %d textures present\n",
@@ -192,7 +183,7 @@ public class Level {
                     t, e.getKey().x, e.getKey().y
             );
 
-            s = new Sprite(textureMap.get(e.getValue() + 10));
+            s = new Sprite(textureMap.get(e.getValue() + 10), new IntRect(0, 0, 8, 8));
             s.setScale(new Vector2f(LudumMain.scalingConst, LudumMain.scalingConst));
             s.setOrigin(new Vector2f(
                     s.getLocalBounds().width / 2,
@@ -234,7 +225,7 @@ public class Level {
                 ret = vertexes[i].position;
 
                 for (Sprite wall : wallSet) {
-                    if (wall.getGlobalBounds().contains(ret) || player.getGlobalBounds().contains(ret)) {
+                    if (wall.getGlobalBounds().contains(ret) || player.isColliding(ret)) {
                         //System.out.printf("Limit for line found at %f/%f\n", ret.x, ret.y);
                         return Vector2f.sub(ret, initial);
                     }
@@ -244,6 +235,29 @@ public class Level {
 
         return Vector2f.sub(ret, initial);
 
+    }
+
+    public void nextFrame(Sprite actor, Integer start) {
+        this.nextFrame(actor, start, actor.getTexture().getSize().x/8);
+    }
+
+    public void nextFrame(Sprite actor, Integer start, Integer end) {
+        IntRect planned = new IntRect(
+                actor.getTextureRect().left + 8, actor.getTextureRect().top,
+                actor.getTextureRect().width, actor.getTextureRect().height
+        );
+        if (planned.left >= end * 8 || actor.getTextureRect().left < start*8) {
+            actor.setTextureRect(new IntRect(
+                            start*8, 0, actor.getTextureRect().width,
+                            actor.getTextureRect().height)
+            );
+        } else {
+            actor.setTextureRect(planned);
+        }
+    }
+
+    public void stopFrame(Sprite actor) {
+        actor.setTextureRect(new IntRect(0, 0, 8, 8));
     }
 
     public Vector2f processMove(Sprite actor, float horMov, float verMov) {
@@ -264,7 +278,7 @@ public class Level {
         boolean blockHor = false;
         boolean blockVer = false;
 
-        for (Sprite wall : wallSet) {
+        for (Sprite wall : LudumMain.currentLevel.wallSet) {
             blockHor = blockHor || (wall.getGlobalBounds().contains(plannedHTL) || wall.getGlobalBounds().contains(plannedHTR)
                     || wall.getGlobalBounds().contains(plannedHBL) || wall.getGlobalBounds().contains(plannedHBR));
 
@@ -295,32 +309,6 @@ public class Level {
         return new Vector2f((blockHor) ? 0 : horMov, (blockVer) ? 0 : verMov);
     }
 
-    public void movePlayerCharacter(float horizontalVelocity, float verticalVelocity, float fpsSmoothing) {
-
-        Vector2f move = processMove(player, (horizontalVelocity * fpsSmoothing), (verticalVelocity * fpsSmoothing));
-
-        float rot=player.getRotation();
-        if (verticalVelocity != 0 || horizontalVelocity != 0) {
-            if (verticalVelocity < 0) {
-                rot = 0;
-            } else if (horizontalVelocity > 0) {
-                rot = 90;
-            } else if (verticalVelocity > 0) {
-                rot = 180;
-            } else if (horizontalVelocity < 0) {
-                rot = 270;
-            }
-        }
-
-        player.setPosition(
-                Vector2f.add(
-                        player.getPosition(), move
-                )
-        );
-
-        player.setRotation(rot);
-    }
-
     public void render() {
         for (Sprite s: floorSet) {
             LudumMain.window.draw(s);
@@ -329,11 +317,11 @@ public class Level {
             LudumMain.window.draw(s);
         }
         for (Enemy e: enemySet) {
-            e.checkSeen(player.getGlobalBounds());
+            e.checkSeen(player.getCurrentBox());
             e.draw(LudumMain.window);
         }
         if (player != null) {
-            LudumMain.window.draw(player);
+            player.draw(LudumMain.window);
         }
     }
 
