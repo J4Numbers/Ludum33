@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.5
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile files('libs/jsfml.jar')
+    compile files('libs/java-json.jar')
+}
+
+task execute(type:JavaExec) {
+    main = 'uk.co.m4numbers.ludum.LudumMain'
+    classpath = sourceSets.main.runtimeClasspath
+}
