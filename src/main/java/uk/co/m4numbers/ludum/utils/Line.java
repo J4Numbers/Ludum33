@@ -38,35 +38,24 @@ public final class Line {
         //->
         //AB
         this.actual = Vector2f.sub(b, a);
+        System.out.printf("Actual line registered was: %f/%f\n", actual.x, actual.y);
     }
 
     public Vertex[] getAllPoints() {
         Vertex[] ret;
+        float inc;
 
         if (Math.abs(actual.x) > Math.abs(actual.y)) {
-            ret = new Vertex[Math.abs((int) Math.floor(actual.x))];
-            float inc = actual.y / actual.x;
-            if (actual.x > 0) {
-                for (int i = 0; i < Math.floor(actual.x); ++i) {
-                    ret[i] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
-                }
-            } else {
-                for (int i = 0; i > Math.ceil(actual.x); --i) {
-                    ret[Math.abs(i)] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
-                }
+            ret = new Vertex[(int) Math.floor(Math.abs(actual.x))];
+            inc = actual.y / actual.x;
+            for (int i = 0; i < Math.floor(Math.abs(actual.x)); ++i) {
+                ret[i] = new Vertex(Vector2f.add(a.position, new Vector2f((actual.x > 0) ? i : -i, i * inc)));
             }
         } else {
             ret = new Vertex[(int) Math.floor(Math.abs(actual.y))];
-            float inc = actual.x / actual.y;
-            System.out.printf("Actual Y: %f, floored Y: %f\n", actual.y, Math.floor(actual.y));
-            if (actual.y > 0) {
-                for (int i = 0; i < Math.floor(actual.y); ++i) {
-                    ret[i] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
-                }
-            } else {
-                for (int i = 0; i > Math.ceil(actual.y); --i) {
-                    ret[Math.abs(i)] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
-                }
+            inc = actual.x / actual.y;
+            for (int i = 0; i < Math.floor(Math.abs(actual.y)); ++i) {
+                ret[i] = new Vertex(Vector2f.add(a.position, new Vector2f(i * inc, (actual.y > 0) ? -i : i)));
             }
         }
 

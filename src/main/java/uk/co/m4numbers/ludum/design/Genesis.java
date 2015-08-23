@@ -100,7 +100,9 @@ public class Genesis {
             SoundBuffer sb;
 
             File levelFolder = new File("sound/");
-            File[] levels = levelFolder.listFiles(new SoundFilter());
+            //File[] levels = levelFolder.listFiles(new SoundFilter());
+
+            File[] levels = null;
 
             if (levels != null) {
 

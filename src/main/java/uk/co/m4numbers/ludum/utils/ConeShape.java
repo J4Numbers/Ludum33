@@ -39,6 +39,8 @@ public class ConeShape extends ConvexShape {
         setOrigin(start);
         setPosition(start);
 
+        System.out.printf("Calculating cone for dir: %f at dist: %f with bisected angle of %f\n", direction, dist, biAngle);
+
         switch (te) {
             case NORMAL:
                 setFillColor(new Color(0, 128, 0, 128));
@@ -54,78 +56,30 @@ public class ConeShape extends ConvexShape {
         float workingAnglePos = direction + biAngle;
         float workingAngleNeg = direction - biAngle;
 
-        float verPos;
-        float horPos;
-        float verNeg;
-        float horNeg;
-        float cos;
-        float sin;
-
-        //if (workingAngleNeg < 0 && workingAngleNeg < 45) {
-        sin = (float) Math.sin(Math.toRadians(workingAngleNeg));
-        cos = (float) Math.cos(Math.toRadians(workingAngleNeg));
-        horNeg = sin * dist;
-        verNeg = cos * dist;
-
-        sin = (float) Math.sin(Math.toRadians(workingAnglePos));
-        cos = (float) Math.cos(Math.toRadians(workingAnglePos));
-        horPos = sin * dist;
-        verPos = cos * dist;
-        //} else if (workingAngleNeg >= 45 && workingAngleNeg < 135) {
-        //
-        //}
-
-        //float hor = (float) Math.cos(Math.toRadians((double) workingAngle)) * dist;
-        //float ver = -((float) Math.sin(Math.toRadians((double) workingAngle)) * dist);
-
-        Line l2 = new Line(getPosition(), Vector2f.add(getPosition(), new Vector2f(horPos, verPos)));
-        Line l3 = new Line(getPosition(), Vector2f.add(getPosition(), new Vector2f(horNeg, verNeg)));
-        Vector2f lim2 = LudumMain.currentLevel.limitLine(l2.getAllPoints(), getPosition());
-        Vector2f lim3 = LudumMain.currentLevel.limitLine(l3.getAllPoints(), getPosition());
-
-        setPoint(0, lim2);
-        //setPoint(0, Vector2f.add(getPosition(),new Vector2f(-(hor), ver)));
-        setPoint(1, start);
-        setPoint(2, lim3);
-        //setPoint(2, Vector2f.add(getPosition(), new Vector2f(hor, ver)));
+        addLimitedPoint(0, workingAnglePos, dist);
+        addLimitedPoint(1, 0, 0);
+        addLimitedPoint(2, workingAngleNeg, dist);
 
         if (pointCount > 0) {
 
             float angInterval = (biAngle * 2) / (pointCount+1);
             float curAng = angInterval;
             int i;
-            Line l;
 
-            for (i = 0; i < pointCount/2; ++i) {
-                float cHor = -((float) (Math.cos(Math.toRadians((double) (workingAngleNeg + curAng))) * dist));
-                float cVer = ((float) (Math.sin(Math.toRadians((double) (workingAngleNeg + curAng))) * dist));
-
-                l = new Line(getPosition(), Vector2f.add(getPosition(), new Vector2f(cHor, cVer)));
-                Vector2f limited = LudumMain.currentLevel.limitLine(l.getAllPoints(), getPosition());
-
-                setPoint(i+3, limited);
-                //setPoint(i + 3, Vector2f.add(getPosition(), new Vector2f(cHor, cVer)));
+            for (i = 0; i < pointCount; ++i) {
+                addLimitedPoint(i+3, workingAngleNeg + curAng, dist);
                 curAng += angInterval;
             }
 
-            if (pointCount % 2 == 1) {
-                sin = (float) Math.sin(Math.toRadians(direction));
-                cos = (float) Math.cos(Math.toRadians(direction));
-                setPoint(i + 3, Vector2f.add(getPosition(), new Vector2f(sin * dist, cos * dist)));
-                ++i;
-            }
-
-            for (; i < pointCount; ++i) {
-                float cHor = ((float) (Math.cos(Math.toRadians((double) (workingAngleNeg + curAng))) * dist));
-                float cVer = ((float) (Math.sin(Math.toRadians((double) (workingAngleNeg + curAng))) * dist));
-
-                l = new Line(getPosition(), Vector2f.add(getPosition(), new Vector2f(cHor, cVer)));
-                Vector2f limited = LudumMain.currentLevel.limitLine(l.getAllPoints(), getPosition());
-
-                setPoint(i+3, limited);
-                //setPoint(i + 3, Vector2f.add(getPosition(), new Vector2f(cHor, cVer)));
-                curAng += angInterval;
-            }
         }
+    }
+
+    private void addLimitedPoint(int pointCount, float angle, float distance) {
+        float cVer = ((float) (Math.cos(Math.toRadians(angle)) * distance));
+        float cHor = ((float) (Math.sin(Math.toRadians(angle)) * distance));
+
+        Line l = new Line(getPosition(), Vector2f.add(getPosition(), new Vector2f(cHor, cVer)));
+        Vector2f limited = LudumMain.currentLevel.limitLine(l.getAllPoints(), getPosition());
+        setPoint(pointCount, Vector2f.add(limited, getPosition()));
     }
 }

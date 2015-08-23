@@ -52,7 +52,7 @@ public class KeyboardInterrupts {
                     LudumMain.currentLevel.setAllEnemyTo(TerrorEnums.TERRIFIED);
                     break;
                 case D:
-                    LudumMain.sounds.get("drums.mid").play();
+                    //LudumMain.sounds.get("drums.mid").play();
                     break;
                 case DOWN:
                     LudumMain.verticalVelocity = 2;

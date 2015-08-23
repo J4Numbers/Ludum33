@@ -32,4 +32,20 @@ public final class Pair {
         this.y = y;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (o instanceof Pair) {
+                Pair p = (Pair) o;
+                return (this.x.equals(p.x) && this.y.equals(p.y));
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return ((13 * this.x) + (27 * this.y)) * 17;
+    }
+
 }

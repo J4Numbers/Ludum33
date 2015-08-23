@@ -80,50 +80,87 @@ public class Level {
         }
     }
 
+    private IntRect getSpriteRotated(Pair location, Integer value) {
+        String rep = "";
+
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; ++j) {
+                if (location.x + i < 0 || location.x + i > 29 || location.y + j < 0 || location.y + j > 15) {
+                    rep += Integer.toString(1);
+                } else {
+                    Pair p = new Pair(location.x + i, location.y + j);
+                    if (levelMap.containsKey(p))
+                        rep += (levelMap.get(p).equals(value)) ? 1 : 0;
+                    else
+                        rep += Integer.toString(1);
+                }
+            }
+        }
+
+        System.out.printf("Square registered as %s\n", rep);
+
+        if (rep.equals("100010000") || rep.equals("001010000")
+                || rep.equals("000010100") || rep.equals("000010001")
+                || rep.equals("000010000") || rep.equals("101010101")
+                || rep.equals("101010100") || rep.equals("001010101")
+                || rep.equals("101010001") || rep.equals("100010101")
+                || rep.equals("101010000") || rep.equals("001010100")
+                || rep.equals("100010001") || rep.equals("000010101")
+                || rep.equals("100010100") || rep.equals("001010001")) {
+            return new IntRect(13 * 16, 0, 16, 16);
+        } else if (rep.equals("010010000") || rep.equals("000110000")
+                || rep.equals("000011000") || rep.equals("000010010")
+                || rep.equals("111010000") || rep.equals("100110100")
+                || rep.equals("001011001") || rep.equals("000010111")
+                || rep.equals("110010000") || rep.equals("011010000")
+                || rep.equals("001011000") || rep.equals("000011001")
+                || rep.equals("000010011") || rep.equals("000010110")
+                || rep.equals("000110100") || rep.equals("100110000")) {
+            return new IntRect(12 * 16, 0, 16, 16);
+        } else if (rep.equals("010010010") || rep.equals("000111000")) {
+            return new IntRect(11 * 16, 0, 16, 16);
+        } else if (rep.equals("011011011") || rep.equals("000111111")
+                || rep.equals("110110110") || rep.equals("111111000")) {
+            return new IntRect(10*16, 0, 16, 16);
+        } else if (rep.equals("011011010") || rep.equals("000111011")
+                || rep.equals("010110110") || rep.equals("110111000")) {
+            return new IntRect(9*16, 0, 16, 16);
+        } else if (rep.equals("010011010") || rep.equals("000111010")
+                || rep.equals("010110010") || rep.equals("010111000")) {
+            return new IntRect(8*16, 0, 16, 16);
+        } else if (rep.equals("000011011") || rep.equals("000110110")
+                || rep.equals("110110000") || rep.equals("011011000")) {
+            return new IntRect(7*16, 0, 16, 16);
+        } else if (rep.equals("000011010") || rep.equals("000110010")
+                || rep.equals("010110000") || rep.equals("010011000")) {
+            return new IntRect(6*16, 0, 16, 16);
+        } else if (rep.equals("010111010")) {
+            return new IntRect(5*16, 0, 16, 16);
+        } else if (rep.equals("110111010") || rep.equals("011111010")
+                || rep.equals("010111110") || rep.equals("010111011")) {
+            return new IntRect(4 * 16, 0, 16, 16);
+        } else if (rep.equals("010111111") || rep.equals("110111110")
+                || rep.equals("111111010") || rep.equals("011111011")) {
+            return new IntRect(3*16, 0, 16, 16);
+        } else if (rep.equals("110111011") || rep.equals("011111110")) {
+            return new IntRect(2*16, 0, 16, 16);
+        } else if (rep.equals("011111111") || rep.equals("110111111")
+                || rep.equals("111111011") || rep.equals("111111110")) {
+            return new IntRect(16, 0, 16, 16);
+        }
+        return new IntRect(0, 0, 16, 16);
+    }
+
     public void load() {
         Sprite s;
-        Map<Pair, Integer> localScore;
         for (Map.Entry<Pair, Integer> entry : levelMap.entrySet()) {
             System.out.printf(
                     "Adding pos (%d, %d) as %d to spritemap\n",
                     entry.getKey().x, entry.getKey().y, entry.getValue()
             );
 
+            s = new Sprite(textureMap.get(entry.getValue()), getSpriteRotated(entry.getKey(), entry.getValue()));
 
-            s = new Sprite(textureMap.get(entry.getValue()), new IntRect(0, 0, 16, 16));
-
-            /**if (entry.getValue() == 1) {
-                localScore = new HashMap<Pair, Integer>();
-
-                Pair curLoc = entry.getKey();
-                int fl;
-                int flCount = 0;
-                String out = "";
-
-                for (int i = -1; i <= 1; i++) {
-                    for (int j = -1; j <= 1; ++j) {
-                        System.out.printf("Checking location %d/%d\n", curLoc.x + i, curLoc.y + j);
-                        if (curLoc.x + i < 0 || curLoc.x + i > 29 || curLoc.y + j < 0 || curLoc.y + j > 15) {
-                            fl = 1;
-                        } else {
-                            System.out.printf("LevelMap entry has string of: %s\n", levelMap.get(new Pair(curLoc.x + i, curLoc.y + j)));
-                            Pair p = new Pair(curLoc.x + i, curLoc.y + j);
-                            if (levelMap.containsKey(p))
-                                fl = levelMap.get(p);
-                            else
-                                fl = 1;
-                        }
-                        System.out.printf("Location checked and entered\n");
-                        localScore.put(new Pair(i, j), fl);
-                        if (fl == 0) ++flCount;
-                        out += fl;
-                    }
-                }
-
-                System.out.printf("Hashcode for map: %s was %d\n", out, localScore.hashCode());
-                //BCB//BCC//BBB 1047462224
-
-            }*/
             s.setScale(new Vector2f(LudumMain.scalingConst, LudumMain.scalingConst));
             s.setPosition(new Vector2f(
                     entry.getKey().x * (16 * LudumMain.scalingConst),
@@ -136,6 +173,7 @@ public class Level {
                 wallSet.add(s);
             }
         }
+
         System.out.printf("All Environ sprites loaded...\n");
 
         EnemyEnums t;
@@ -191,20 +229,20 @@ public class Level {
 
         for (int i=0; i<vertexes.length; ++i) {
 
-            System.out.printf("Vertex %d is being checked\n", i);
+            //System.out.printf("Vertex %d is being checked\n", i);
             if (vertexes[i] != null) {
                 ret = vertexes[i].position;
 
                 for (Sprite wall : wallSet) {
-                    if (wall.getGlobalBounds().contains(ret)) {
-                        System.out.printf("Limit for line found at %f/%f\n", ret.x, ret.y);
-                        return ret;
+                    if (wall.getGlobalBounds().contains(ret) || player.getGlobalBounds().contains(ret)) {
+                        //System.out.printf("Limit for line found at %f/%f\n", ret.x, ret.y);
+                        return Vector2f.sub(ret, initial);
                     }
                 }
             }
         }
 
-        return ret;
+        return Vector2f.sub(ret, initial);
 
     }
 
@@ -261,40 +299,26 @@ public class Level {
 
         Vector2f move = processMove(player, (horizontalVelocity * fpsSmoothing), (verticalVelocity * fpsSmoothing));
 
-       /* float tanL;
-        float absX = Math.abs(move.x);
-        float absY = Math.abs(move.y);
-        float additional;
-
-        if (absX > 0 || absY > 0) {
-            //TOA T = Opp / Adj
-            if (absX < absY) {
-                tanL = absY / absX;
-            } else {
-                tanL = absX / absY;
+        float rot=player.getRotation();
+        if (verticalVelocity != 0 || horizontalVelocity != 0) {
+            if (verticalVelocity < 0) {
+                rot = 0;
+            } else if (horizontalVelocity > 0) {
+                rot = 90;
+            } else if (verticalVelocity > 0) {
+                rot = 180;
+            } else if (horizontalVelocity < 0) {
+                rot = 270;
             }
-
-            if (move.x >= 0 && move.y >= 0) {
-                additional = 0;
-            }else if(move.x > 0 && move.y < 0) {
-                additional = 90;
-            }else if(move.x < 0 && move.y < 0) {
-                additional = 180;
-            }else{
-                additional = 270;
-            }
-
-            float angle = (float) Math.toDegrees(Math.atan(tanL));
-
-            player.setRotation(angle + additional);
-
-        }*/
+        }
 
         player.setPosition(
                 Vector2f.add(
                         player.getPosition(), move
                 )
         );
+
+        player.setRotation(rot);
     }
 
     public void render() {
@@ -308,8 +332,9 @@ public class Level {
             e.checkSeen(player.getGlobalBounds());
             e.draw(LudumMain.window);
         }
-        if (player != null)
+        if (player != null) {
             LudumMain.window.draw(player);
+        }
     }
 
 }

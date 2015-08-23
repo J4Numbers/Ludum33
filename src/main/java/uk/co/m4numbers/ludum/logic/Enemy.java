@@ -84,7 +84,7 @@ public abstract class Enemy {
         Vector2f proposed = Vector2f.mul(this.prevMove, fpsSmoothing);
 
         this.actor.setPosition(
-                Vector2f.add(LudumMain.currentLevel.processMove(actor,proposed.x, proposed.y),
+               Vector2f.add(LudumMain.currentLevel.processMove(actor,proposed.x, proposed.y),
                         actor.getPosition())
         );
         calculateVision();
