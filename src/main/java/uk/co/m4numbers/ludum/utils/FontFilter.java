@@ -1,4 +1,4 @@
-package uk.co.m4numbers.ludum.logic;
+package uk.co.m4numbers.ludum.utils;
 /**
  * Copyright 2015 M. D. Ball (m.d.ball2@ncl.ac.uk)
  * <p/>
@@ -15,31 +15,19 @@ package uk.co.m4numbers.ludum.logic;
  * limitations under the License.
  */
 
-import org.jsfml.graphics.Sprite;
-import org.jsfml.system.Vector2f;
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
- * Class Name - ExterminatorEnemy
- * Package - uk.co.m4numbers.ludum.logic
+ * Class Name - FontFilter
+ * Package - uk.co.m4numbers.ludum.utils
  * Desc of Class - ...
  * Author(s) - M. D. Ball
- * Last Mod: 22/08/2015
+ * Last Mod: 23/08/2015
  */
-public class ExterminatorEnemy extends Enemy {
-
-    public ExterminatorEnemy(Sprite actor) {
-        super(actor, TerrorEnums.NORMAL, 30, 30);
+public class FontFilter implements FilenameFilter {
+    @Override
+    public boolean accept(File dir, String name) {
+        return name.toLowerCase().endsWith(".ttf");
     }
-
-    @Override
-    protected void touching() {}
-
-    @Override
-    protected Vector2f calculateMovement() {
-        return new Vector2f(0,0);
-    }
-
-    @Override
-    protected void react() {}
-
 }

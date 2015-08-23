@@ -18,23 +18,19 @@ package uk.co.m4numbers.ludum.design;
 import org.jsfml.audio.Sound;
 import org.jsfml.audio.SoundBuffer;
 import org.jsfml.graphics.*;
+import org.jsfml.system.Clock;
 import org.jsfml.window.VideoMode;
 
 import org.json.JSONObject;
 import uk.co.m4numbers.ludum.LudumMain;
 import uk.co.m4numbers.ludum.fileio.LudumFile;
-import uk.co.m4numbers.ludum.utils.LevelFilter;
-import uk.co.m4numbers.ludum.utils.Pair;
-import uk.co.m4numbers.ludum.utils.SoundFilter;
-import uk.co.m4numbers.ludum.utils.SpriteFilter;
+import uk.co.m4numbers.ludum.utils.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Class Name - Genesis
@@ -99,19 +95,19 @@ public class Genesis {
 
             SoundBuffer sb;
 
-            File levelFolder = new File("sound/");
-            //File[] levels = levelFolder.listFiles(new SoundFilter());
+            File sound = new File("sound/");
+            //File[] sounds = levelFolder.listFiles(new SoundFilter());
 
-            File[] levels = null;
+            File[] sounds = null;
 
-            if (levels != null) {
+            if (sounds != null) {
 
-                for (File lvl : levels) {
+                for (File snd : sounds) {
                     sb = new SoundBuffer();
-                    sb.loadFromFile(Paths.get(lvl.toURI()));
+                    sb.loadFromFile(Paths.get(snd.toURI()));
 
-                    soundMap.put(lvl.getName(), new Sound(sb));
-                    System.out.printf("Adding %s to sounds\n", lvl.getName());
+                    soundMap.put(snd.getName(), new Sound(sb));
+                    System.out.printf("Adding %s to sounds\n", snd.getName());
                 }
 
             }
@@ -196,7 +192,7 @@ public class Genesis {
 
                     textureMap.put(5, LudumMain.textures.get("player.png"));
                     textureMap.put(10, LudumMain.textures.get("tourist.png"));
-                    textureMap.put(11, LudumMain.textures.get("enemy_1.png"));
+                    textureMap.put(11, LudumMain.textures.get("soldier.png"));
                     textureMap.put(12, LudumMain.textures.get("enemy_2.png"));
 
                     levelMap.put(
@@ -216,6 +212,55 @@ public class Genesis {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public static Map<String, Font> dayFour() throws Exception {
+        try {
+            Map<String, Font> fontMap = new HashMap<String, Font>();
+
+            Font f;
+
+            File fontFolder = new File("fonts/");
+            File[] fonts = fontFolder.listFiles(new FontFilter());
+
+            if (fonts != null) {
+
+                for (File font : fonts) {
+                    f = new Font();
+                    f.loadFromFile(Paths.get(font.toURI()));
+
+                    fontMap.put(font.getName(), f);
+                    System.out.printf("Adding %s to fonts\n", font.getName());
+                }
+
+            }
+
+            return fontMap;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public static void daySeven() {
+        LudumMain.spawn = true;
+        LudumMain.stage = 1;
+
+        LudumMain.currentLevel = LudumMain.levels.get("level_one.json");
+        LudumMain.currentLevel.clear();
+        LudumMain.currentLevel.load();
+
+        LudumMain.timeSince = new Clock();
+        LudumMain.totalTime = new Clock();
+
+        LudumMain.spawner = new Timer();
+        LudumMain.spawner.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                LudumMain.spawn = true;
+            }
+        }, 5000, 5000);
+
+        System.out.printf("Welcome to the jungle.\n");
     }
 
 }

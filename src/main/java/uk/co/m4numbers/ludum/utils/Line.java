@@ -38,7 +38,7 @@ public final class Line {
         //->
         //AB
         this.actual = Vector2f.sub(b, a);
-        System.out.printf("Actual line registered was: %f/%f\n", actual.x, actual.y);
+        //System.out.printf("Actual line registered was: %f/%f\n", actual.x, actual.y);
     }
 
     public Vertex[] getAllPoints() {

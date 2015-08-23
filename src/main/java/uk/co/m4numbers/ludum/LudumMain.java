@@ -29,7 +29,6 @@ import org.jsfml.graphics.*;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Time;
 
-import org.jsfml.system.Vector2f;
 import org.jsfml.window.event.Event;
 
 import uk.co.m4numbers.ludum.design.Genesis;
@@ -38,7 +37,7 @@ import uk.co.m4numbers.ludum.logic.Enemy;
 import uk.co.m4numbers.ludum.logic.KeyboardInterrupts;
 
 import java.util.Map;
-import java.util.Set;
+import java.util.Timer;
 
 public class LudumMain {
 
@@ -46,14 +45,22 @@ public class LudumMain {
     public static Map<String, Texture> textures;
     public static Map<String, Sound> sounds;
     public static Map<String, Level> levels;
+    public static Map<String, Font> fonts;
 
     public static final Integer scalingConst = 2;
+
+    public static Timer spawner;
+    public static Integer stage = 1;
+    public static Boolean spawn = true;
+    public static Clock totalTime;
+    public static Clock timeSince;
+    public static float finalTime;
 
     public static float horizontalVelocity;
     public static float verticalVelocity;
     public static Level currentLevel;
 
-    public static boolean isPlaying = true;
+    public static boolean isDead = false;
 
     public static void main(String[] args) {
 
@@ -63,16 +70,12 @@ public class LudumMain {
             textures = Genesis.dayOne();
             sounds = Genesis.dayTwo();
             levels = Genesis.dayThree();
+            fonts = Genesis.dayFour();
 
-            currentLevel = levels.get("level_one.json");
-
-            currentLevel.load();
-
-            System.out.printf("Welcome to the jungle.\n");
+            Genesis.daySeven();
 
             float fps;
-            Clock c = new Clock();
-            float moveAssist = 1;
+            Text txt;
 
             while (window.isOpen()) {
 
@@ -80,24 +83,40 @@ public class LudumMain {
                     KeyboardInterrupts.handleEvent(event);
 
                 window.clear();
-                Time elapse = c.restart();
+                Time elapse = timeSince.restart();
 
                 fps = 1.f / elapse.asSeconds();
 
                 float fpsSmoothing = 1 / (fps/60);
 
-                if (isPlaying) {
-
-                    moveAssist += elapse.asSeconds();
-
+                if (!isDead) {
 
                     currentLevel.player.movePlayerCharacter(horizontalVelocity, verticalVelocity, fpsSmoothing);
                     for (Enemy e : currentLevel.enemySet) {
-                        moveAssist = e.move(fpsSmoothing, moveAssist);
+                        e.move(fpsSmoothing, elapse.asSeconds());
                     }
+                    currentLevel.ui.render(elapse.asSeconds());
 
+                    if (spawn) {
+                        spawn = false;
+                        currentLevel.releaseEnemies(stage);
+                        ++stage;
+                    }
                     currentLevel.render();
 
+                } else {
+                    spawner.cancel();
+                    if (currentLevel.player.hasJustDied()) {
+                        finalTime = totalTime.getElapsedTime().asSeconds();
+                    }
+                    txt = new Text(
+                            String.format("You lasted %.2f seconds. Congrats, press R to restart", finalTime),
+                            fonts.get("scrawl_tmp.ttf"), 32
+                    );
+                    txt.setOrigin(txt.getLocalBounds().width / 2, txt.getLocalBounds().height / 2);
+                    txt.setPosition(window.getSize().x/2, window.getSize().y/2);
+                    txt.setColor(Color.WHITE);
+                    window.draw(txt);
                 }
                 window.display();
 

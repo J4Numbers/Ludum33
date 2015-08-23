@@ -17,6 +17,9 @@ package uk.co.m4numbers.ludum.logic;
 
 import org.jsfml.graphics.Sprite;
 import org.jsfml.system.Vector2f;
+import uk.co.m4numbers.ludum.LudumMain;
+
+import java.util.Random;
 
 /**
  * Class Name - SoldierEnemy
@@ -28,15 +31,163 @@ import org.jsfml.system.Vector2f;
 public class SoldierEnemy extends Enemy {
 
     public SoldierEnemy(Sprite actor) {
-        super(actor, TerrorEnums.NORMAL, 30, 30);
+        super(actor, TerrorEnums.NORMAL, 80, 30);
+    }
+
+    @Override
+    protected void touching() {
+        LudumMain.isDead = true;
+    }
+
+    @Override
+    protected void react() {
+        this.terrorLevel = TerrorEnums.TERRIFIED;
+        this.terrorChanged = true;
+        this.fromTerrified = LudumMain.currentLevel.player.actor.getPosition();
     }
 
     @Override
     protected Vector2f calculateMovement() {
-        return new Vector2f(0,0);
-    }
 
-    @Override
-    protected void react() {}
+        Vector2f stat = new Vector2f(0,0);
+        Random rnd = new Random();
+        Integer c;
+        float vel = this.terrorLevel.getVelocity();
+        Integer chance = this.terrorLevel.getTurnChance();
+
+        Vector2f left = LudumMain.currentLevel.processMove(
+                this.actor, -(((16 * LudumMain.scalingConst)-actor.getLocalBounds().width)/2), 0
+        );
+        Vector2f up = LudumMain.currentLevel.processMove(
+                this.actor, 0, -(((16 * LudumMain.scalingConst)-actor.getLocalBounds().height)/2)
+        );
+        Vector2f right = LudumMain.currentLevel.processMove(
+                this.actor, ((16 * LudumMain.scalingConst)-actor.getLocalBounds().width)/2, 0
+        );
+        Vector2f down = LudumMain.currentLevel.processMove(
+                this.actor, 0, ((16 * LudumMain.scalingConst)-actor.getLocalBounds().height)/2
+        );
+
+        if (this.horVel == 0 && this.verVel == 0) {
+            Vector2f[] dirs = new Vector2f[4];
+            int o = 0;
+            if (!left.equals(stat)) {
+                dirs[o] = left;
+                ++o;
+            }
+            if (!up.equals(stat)) {
+                dirs[o] = up;
+                ++o;
+            }
+            if (!right.equals(stat)) {
+                dirs[o] = right;
+                ++o;
+            }
+            if (!down.equals(stat)) {
+                dirs[o] = down;
+                ++o;
+            }
+
+            c = rnd.nextInt(o);
+
+            if (dirs[c].equals(left)) {
+                horVel = -(vel);
+            } else if (dirs[c].equals(up)) {
+                verVel = -(vel);
+            } else if (dirs[c].equals(right)) {
+                horVel = vel;
+            } else if (dirs[c].equals(down)) {
+                verVel = vel;
+            }
+        } else
+        if (this.horVel != 0) {
+            if (left.equals(stat) && right.equals(stat)) {
+                this.horVel = 0;
+            }
+            if (!up.equals(stat) || !down.equals(stat)) {
+                c = rnd.nextInt(chance);
+                if (c == 0) {
+                    this.horVel = 0;
+
+                    c = rnd.nextInt(2);
+                    if (c==0 && !up.equals(stat)) {
+                        this.verVel = -(vel);
+                    } else if (!down.equals(stat)) {
+                        this.verVel = vel;
+                    }
+
+                }
+            }
+            if (horVel > 0) {
+                if (right.equals(stat)) {
+                    c = rnd.nextInt(2);
+                    this.horVel = 0;
+                    if (c==0 && !up.equals(stat)) {
+                        this.verVel = -(vel);
+                    } else if (!down.equals(stat)) {
+                        this.verVel = vel;
+                    } else {
+                        horVel = -(vel);
+                    }
+                }
+            } else if (horVel < 0) {
+                if (left.equals(stat)) {
+                    c = rnd.nextInt(2);
+                    this.horVel = 0;
+                    if (c==0 && !up.equals(stat)) {
+                        this.verVel = -(vel);
+                    } else if (!down.equals(stat)) {
+                        this.verVel = vel;
+                    } else {
+                        horVel = vel;
+                    }
+                }
+            }
+        } else if (this.verVel != 0) {
+            if (up.equals(stat) && down.equals(stat)) {
+                this.verVel = 0;
+            }
+            if (!left.equals(stat) || !right.equals(stat)) {
+                c = rnd.nextInt(chance);
+                if (c == 0) {
+                    this.verVel = 0;
+
+                    c = rnd.nextInt(2);
+                    if (c==0 && !left.equals(stat)) {
+                        this.horVel = -(vel);
+                    } else if (!right.equals(stat)) {
+                        this.horVel = vel;
+                    }
+                }
+            }
+            if (verVel > 0) {
+                if (down.equals(stat)) {
+                    c = rnd.nextInt(2);
+                    this.verVel = 0;
+                    if (c==0 && !left.equals(stat)) {
+                        this.horVel = -(vel);
+                    } else if (!right.equals(stat)) {
+                        this.horVel = vel;
+                    } else {
+                        verVel = -(vel);
+                    }
+                }
+            } else if (verVel < 0) {
+                if (up.equals(stat)) {
+                    c = rnd.nextInt(2);
+                    this.verVel = 0;
+                    if (c==0 && !left.equals(stat)) {
+                        this.horVel = -(vel);
+                    } else if (!right.equals(stat)) {
+                        this.horVel = vel;
+                    } else {
+                        verVel = vel;
+                    }
+                }
+            }
+        }
+
+        return new Vector2f(horVel, verVel);
+    }
 
 }

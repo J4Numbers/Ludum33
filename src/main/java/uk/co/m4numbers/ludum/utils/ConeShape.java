@@ -39,7 +39,7 @@ public class ConeShape extends ConvexShape {
         setOrigin(start);
         setPosition(start);
 
-        System.out.printf("Calculating cone for dir: %f at dist: %f with bisected angle of %f\n", direction, dist, biAngle);
+        //System.out.printf("Calculating cone for dir: %f at dist: %f with bisected angle of %f\n", direction, dist, biAngle);
 
         switch (te) {
             case NORMAL:

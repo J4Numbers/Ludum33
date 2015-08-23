@@ -24,6 +24,9 @@ import org.jsfml.system.Vector2f;
 import uk.co.m4numbers.ludum.LudumMain;
 import uk.co.m4numbers.ludum.utils.Pair;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Class Name - Player
  * Package - uk.co.m4numbers.ludum.logic
@@ -33,6 +36,8 @@ import uk.co.m4numbers.ludum.utils.Pair;
  */
 public class Player {
     protected Sprite actor;
+
+    public boolean died;
 
     private boolean biting = false;
     private Clock bTimer = new Clock();
@@ -50,6 +55,14 @@ public class Player {
         ));
     }
 
+    public boolean hasJustDied() {
+        if (!died) {
+            died = true;
+            return true;
+        }
+        return false;
+    }
+
     public void movePlayerCharacter(float horizontalVelocity, float verticalVelocity, float fpsSmoothing) {
 
         Vector2f move = LudumMain.currentLevel.processMove(
@@ -61,8 +74,17 @@ public class Player {
         if (biting) {
             if (bTimer.getElapsedTime().asSeconds() > 0.5)
                 biting = false;
-            else
+            else {
+                Set<Enemy> killSet = new HashSet<Enemy>();
                 LudumMain.currentLevel.nextFrame(actor, 1, 3);
+                 for (Enemy e : LudumMain.currentLevel.enemySet) {
+                    if (e.actor.getGlobalBounds().intersection(this.actor.getGlobalBounds()) != null) {
+                        LudumMain.currentLevel.ui.delayHealth();
+                        killSet.add(e);
+                    }
+                }
+                LudumMain.currentLevel.killEnemy(killSet);
+            }
         } else {
             if (verticalVelocity != 0 || horizontalVelocity != 0) {
                 if (verticalVelocity < 0) {

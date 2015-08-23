@@ -15,14 +15,12 @@ package uk.co.m4numbers.ludum.logic;
  * limitations under the License.
  */
 
-import org.jsfml.graphics.IntRect;
 import org.jsfml.window.Keyboard;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.KeyEvent;
+
 import uk.co.m4numbers.ludum.LudumMain;
 import uk.co.m4numbers.ludum.design.Genesis;
-
-import java.security.Key;
 
 /**
  * Class Name - KeyboardInterrupts
@@ -33,6 +31,8 @@ import java.security.Key;
  */
 public class KeyboardInterrupts {
 
+    public static int number = 1;
+
     public static void handleEvent(Event e) {
         if (e.type == Event.Type.CLOSED)
             LudumMain.window.close();
@@ -42,17 +42,15 @@ public class KeyboardInterrupts {
             KeyEvent ke = e.asKeyEvent();
 
             switch (ke.key) {
-                case A:
-                    LudumMain.currentLevel.setAllEnemyTo(TerrorEnums.NORMAL);
+                case E:
+                    LudumMain.currentLevel.releaseEnemies(number);
+                    ++number;
                     break;
-                case B:
-                    LudumMain.currentLevel.setAllEnemyTo(TerrorEnums.PARANOID);
-                    break;
-                case C:
-                    LudumMain.currentLevel.setAllEnemyTo(TerrorEnums.TERRIFIED);
-                    break;
-                case D:
-                    //LudumMain.sounds.get("drums.mid").play();
+                case R:
+                    if (LudumMain.isDead) {
+                        LudumMain.isDead = false;
+                        Genesis.daySeven();
+                    }
                     break;
                 case DOWN:
                     LudumMain.verticalVelocity = 2;

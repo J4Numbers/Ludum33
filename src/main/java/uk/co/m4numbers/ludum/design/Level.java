@@ -24,6 +24,7 @@ import uk.co.m4numbers.ludum.utils.Pair;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -39,10 +40,13 @@ public class Level {
     private Map<Integer, Texture> textureMap;
     private Map<Pair, Integer> enemyMap;
 
+    public MonsterUI ui;
     public Set<Sprite> floorSet;
     public Set<Sprite> wallSet;
     public Player player;
     public Set<Enemy> enemySet;
+
+    public Pair startingPoint;
 
     public Level(
             Map<Pair, Integer> levelMap, Map<Integer, Texture> textureMap,
@@ -50,12 +54,9 @@ public class Level {
         this.levelMap = levelMap;
         this.textureMap = textureMap;
         this.enemyMap = enemyMap;
+        this.startingPoint = charStart;
 
-        this.floorSet = new HashSet<Sprite>();
-        this.wallSet = new HashSet<Sprite>();
-        this.enemySet = new HashSet<Enemy>();
-
-        this.player = new Player(new Sprite(textureMap.get(5), new IntRect(0, 0, 8, 8)), charStart);
+        this.clear();
 
         System.out.printf(
                 "There are %d entries in the level, and %d textures present\n",
@@ -69,6 +70,16 @@ public class Level {
         for (Map.Entry<Integer, Texture> text : this.textureMap.entrySet()) {
             System.out.printf("Texture at loc %d is %s\n", text.getKey(), text.getValue().toString());
         }
+    }
+
+    public void clear() {
+        this.ui = new MonsterUI();
+
+        this.floorSet = new HashSet<Sprite>();
+        this.wallSet = new HashSet<Sprite>();
+        this.enemySet = new HashSet<Enemy>();
+
+        this.player = new Player(new Sprite(textureMap.get(5), new IntRect(0, 0, 8, 8)), startingPoint);
     }
 
     private IntRect getSpriteRotated(Pair location, Integer value) {
@@ -142,6 +153,31 @@ public class Level {
         return new IntRect(0, 0, 16, 16);
     }
 
+    public Sprite createSprite(EnemyEnums type) {
+        Sprite s = new Sprite(textureMap.get(type.texture), new IntRect(0, 0, 8, 8));
+        s.setScale(new Vector2f(LudumMain.scalingConst, LudumMain.scalingConst));
+        s.setOrigin(new Vector2f(
+                s.getLocalBounds().width / 2,
+                s.getLocalBounds().height / 2
+        ));
+
+        Random rnd = new Random();
+        Pair p;
+
+        do {
+            int x = rnd.nextInt(30);
+            int y = rnd.nextInt(16);
+             p = new Pair(x, y);
+        } while (levelMap.get(p) != 0);
+
+        s.setPosition(new Vector2f(
+                p.x * (16 * LudumMain.scalingConst) + (16 * LudumMain.scalingConst) / 2,
+                p.y * (16 * LudumMain.scalingConst) + (16 * LudumMain.scalingConst) / 2
+        ));
+
+        return s;
+    }
+
     public void load() {
         Sprite s;
         for (Map.Entry<Pair, Integer> entry : levelMap.entrySet()) {
@@ -167,45 +203,7 @@ public class Level {
 
         System.out.printf("All Environ sprites loaded...\n");
 
-        EnemyEnums t;
-        for (Map.Entry<Pair, Integer> e : enemyMap.entrySet()) {
-
-            if (e.getValue() == 0) {
-                t = EnemyEnums.TOURIST;
-            } else if (e.getValue() == 1) {
-                t = EnemyEnums.SOILDIER;
-            } else {
-                t = EnemyEnums.EXTERMINATOR;
-            }
-
-            System.out.printf(
-                    "Adding enemy of type: %s to pos (%d/%d) in spritemap\n",
-                    t, e.getKey().x, e.getKey().y
-            );
-
-            s = new Sprite(textureMap.get(e.getValue() + 10), new IntRect(0, 0, 8, 8));
-            s.setScale(new Vector2f(LudumMain.scalingConst, LudumMain.scalingConst));
-            s.setOrigin(new Vector2f(
-                    s.getLocalBounds().width / 2,
-                    s.getLocalBounds().height / 2
-            ));
-            s.setPosition(new Vector2f(
-                    e.getKey().x * (16 * LudumMain.scalingConst) + (16 * LudumMain.scalingConst) / 2,
-                    e.getKey().y * (16 * LudumMain.scalingConst) + (16 * LudumMain.scalingConst) / 2
-            ));
-
-            switch (t) {
-                case TOURIST:
-                    enemySet.add(new TouristEnemy(s));
-                    break;
-                case SOILDIER:
-                    enemySet.add(new SoldierEnemy(s));
-                    break;
-                case EXTERMINATOR:
-                    enemySet.add(new ExterminatorEnemy(s));
-                    break;
-            }
-        }
+        spawnEnemy(1, EnemyEnums.TOURIST);
     }
 
     public void setAllEnemyTo(TerrorEnums te) {
@@ -316,8 +314,10 @@ public class Level {
         for (Sprite s: wallSet) {
             LudumMain.window.draw(s);
         }
+        ui.draw(LudumMain.window);
         for (Enemy e: enemySet) {
             e.checkSeen(player.getCurrentBox());
+            e.isTouching(player.getCurrentBox());
             e.draw(LudumMain.window);
         }
         if (player != null) {
@@ -325,4 +325,25 @@ public class Level {
         }
     }
 
+    public void killEnemy(Set<Enemy> e) {
+        for (Enemy f: e)
+            enemySet.remove(f);
+    }
+
+    private void spawnEnemy(int count, EnemyEnums type) {
+        try {
+            for (int i=0; i<count; ++i) {
+                enemySet.add(
+                        (Enemy) type.reflector.getConstructor(Sprite.class).newInstance(createSprite(type))
+                );
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    public void releaseEnemies(Integer key) {
+        spawnEnemy( key / 10, EnemyEnums.EXTERMINATOR);
+        spawnEnemy((key % 10) / 3, EnemyEnums.SOILDIER);
+        spawnEnemy((key % 10) % 3, EnemyEnums.TOURIST);
+    }
 }

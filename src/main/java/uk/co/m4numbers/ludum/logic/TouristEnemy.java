@@ -37,8 +37,12 @@ public class TouristEnemy extends Enemy {
     }
 
     @Override
+    protected void touching() {}
+
+    @Override
     protected void react() {
-        this.setTerrorLevel(TerrorEnums.TERRIFIED);
+        this.terrorLevel = TerrorEnums.TERRIFIED;
+        this.terrorChanged = true;
         this.fromTerrified = actor.getPosition();
     }
 
