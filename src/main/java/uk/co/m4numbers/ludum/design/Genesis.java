@@ -177,19 +177,6 @@ public class Genesis {
                         );
                     }
 
-                    i = level.getJSONObject("enemies").keys();
-
-                    while (i.hasNext()) {
-                        iter = (String) i.next();
-
-                        enemyMap.put(
-                                new Pair(
-                                        level.getJSONObject("enemies").getJSONObject(iter).getInt("x"),
-                                        level.getJSONObject("enemies").getJSONObject(iter).getInt("y")
-                                ), level.getJSONObject("enemies").getJSONObject(iter).getInt("type")
-                        );
-                    }
-
                     textureMap.put(5, LudumMain.textures.get("player.png"));
                     textureMap.put(10, LudumMain.textures.get("tourist.png"));
                     textureMap.put(11, LudumMain.textures.get("soldier.png"));
@@ -198,7 +185,7 @@ public class Genesis {
                     levelMap.put(
                             lvl.getName(),
                             new Level(
-                                    spriteMap, textureMap, enemyMap,
+                                    spriteMap, textureMap,
                                     new Pair(level.getJSONObject("char").getInt("x"), level.getJSONObject("char").getInt("y"))
                             )
                     );
@@ -258,7 +245,7 @@ public class Genesis {
             public void run() {
                 LudumMain.spawn = true;
             }
-        }, 5000, 5000);
+        }, 10000, 10000);
 
         System.out.printf("Welcome to the jungle.\n");
     }

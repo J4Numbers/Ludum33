@@ -38,7 +38,6 @@ public class Level {
 
     private Map<Pair, Integer> levelMap;
     private Map<Integer, Texture> textureMap;
-    private Map<Pair, Integer> enemyMap;
 
     public MonsterUI ui;
     public Set<Sprite> floorSet;
@@ -50,10 +49,9 @@ public class Level {
 
     public Level(
             Map<Pair, Integer> levelMap, Map<Integer, Texture> textureMap,
-            Map<Pair, Integer> enemyMap, Pair charStart) {
+            Pair charStart) {
         this.levelMap = levelMap;
         this.textureMap = textureMap;
-        this.enemyMap = enemyMap;
         this.startingPoint = charStart;
 
         this.clear();
@@ -202,8 +200,6 @@ public class Level {
         }
 
         System.out.printf("All Environ sprites loaded...\n");
-
-        spawnEnemy(1, EnemyEnums.TOURIST);
     }
 
     public void setAllEnemyTo(TerrorEnums te) {
