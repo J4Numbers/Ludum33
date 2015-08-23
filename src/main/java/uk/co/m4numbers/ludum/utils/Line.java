@@ -47,23 +47,24 @@ public final class Line {
             ret = new Vertex[Math.abs((int) Math.floor(actual.x))];
             float inc = actual.y / actual.x;
             if (actual.x > 0) {
-                for (int i = 0; i <= Math.floor(actual.x); ++i) {
+                for (int i = 0; i < Math.floor(actual.x); ++i) {
                     ret[i] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
                 }
             } else {
-                for (int i = 0; i >= Math.ceil(actual.x); --i) {
+                for (int i = 0; i > Math.ceil(actual.x); --i) {
                     ret[Math.abs(i)] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
                 }
             }
         } else {
-            ret = new Vertex[Math.abs((int) Math.floor(actual.y))];
+            ret = new Vertex[(int) Math.floor(Math.abs(actual.y))];
             float inc = actual.x / actual.y;
+            System.out.printf("Actual Y: %f, floored Y: %f\n", actual.y, Math.floor(actual.y));
             if (actual.y > 0) {
-                for (int i = 0; i <= Math.floor(actual.y); ++i) {
+                for (int i = 0; i < Math.floor(actual.y); ++i) {
                     ret[i] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
                 }
             } else {
-                for (int i = 0; i >= Math.ceil(actual.y); --i) {
+                for (int i = 0; i > Math.ceil(actual.y); --i) {
                     ret[Math.abs(i)] = new Vertex(Vector2f.add(a.position, new Vector2f(i, i * inc)));
                 }
             }

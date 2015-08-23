@@ -36,7 +36,7 @@ public abstract class Enemy {
     }
 
     protected void calculateVision() {
-        this.visionCone = new ConeShape(actor.getPosition(), range, biVisAng, 31, terrorLevel);
+
         int rot=0;
         if (verVel < 0) {
             rot = 0;
@@ -50,7 +50,7 @@ public abstract class Enemy {
         if (horVel < 0) {
             rot = 3;
         }
-        this.visionCone.setRotation(rot * 90f);
+        this.visionCone = new ConeShape(actor.getPosition(), range, rot*90, biVisAng, 31, terrorLevel);
         this.actor.setRotation(rot * 90f);
     }
 

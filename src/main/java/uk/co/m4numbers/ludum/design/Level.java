@@ -22,7 +22,6 @@ import uk.co.m4numbers.ludum.LudumMain;
 import uk.co.m4numbers.ludum.logic.*;
 import uk.co.m4numbers.ludum.utils.Pair;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -72,9 +71,9 @@ public class Level {
                 levelMap.size(), textureMap.size()
         );
 
-        for (Map.Entry<Pair, Integer> e: levelMap.entrySet()) {
-            System.out.printf("Item at location %d/%d is %d\n", e.getKey().x, e.getKey().y, e.getValue());
-        }
+        //for (Map.Entry<Pair, Integer> e: levelMap.entrySet()) {
+        //    System.out.printf("Item at location %d/%d is %d\n", e.getKey().x, e.getKey().y, e.getValue());
+        //}
 
         for (Map.Entry<Integer, Texture> text : this.textureMap.entrySet()) {
             System.out.printf("Texture at loc %d is %s\n", text.getKey(), text.getValue().toString());
@@ -192,15 +191,17 @@ public class Level {
 
         for (int i=0; i<vertexes.length; ++i) {
 
-            ret = vertexes[i].position;
+            System.out.printf("Vertex %d is being checked\n", i);
+            if (vertexes[i] != null) {
+                ret = vertexes[i].position;
 
-            for (Sprite wall: wallSet) {
-                if (wall.getGlobalBounds().contains(ret)) {
-                    System.out.printf("Limit for line found at %f/%f\n", ret.x, ret.y);
-                    return ret;
+                for (Sprite wall : wallSet) {
+                    if (wall.getGlobalBounds().contains(ret)) {
+                        System.out.printf("Limit for line found at %f/%f\n", ret.x, ret.y);
+                        return ret;
+                    }
                 }
             }
-
         }
 
         return ret;

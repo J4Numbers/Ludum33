@@ -23,6 +23,7 @@ package uk.co.m4numbers.ludum;
  * Last Mod: 20/08/2015
  */
 
+import org.jsfml.audio.Sound;
 import org.jsfml.graphics.*;
 
 import org.jsfml.system.Clock;
@@ -43,6 +44,7 @@ public class LudumMain {
 
     public static RenderWindow window;
     public static Map<String, Texture> textures;
+    public static Map<String, Sound> sounds;
     public static Map<String, Level> levels;
 
     public static final Integer scalingConst = 2;
@@ -59,7 +61,8 @@ public class LudumMain {
 
             window = Genesis.dayZero();
             textures = Genesis.dayOne();
-            levels = Genesis.dayTwo();
+            sounds = Genesis.dayTwo();
+            levels = Genesis.dayThree();
 
             currentLevel = levels.get("level_one.json");
 

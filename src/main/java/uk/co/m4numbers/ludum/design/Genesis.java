@@ -15,6 +15,8 @@ package uk.co.m4numbers.ludum.design;
  * limitations under the License.
  */
 
+import org.jsfml.audio.Sound;
+import org.jsfml.audio.SoundBuffer;
 import org.jsfml.graphics.*;
 import org.jsfml.window.VideoMode;
 
@@ -23,6 +25,7 @@ import uk.co.m4numbers.ludum.LudumMain;
 import uk.co.m4numbers.ludum.fileio.LudumFile;
 import uk.co.m4numbers.ludum.utils.LevelFilter;
 import uk.co.m4numbers.ludum.utils.Pair;
+import uk.co.m4numbers.ludum.utils.SoundFilter;
 import uk.co.m4numbers.ludum.utils.SpriteFilter;
 
 import java.io.File;
@@ -90,7 +93,34 @@ public class Genesis {
         }
     }
 
-    public static Map<String, Level> dayTwo() throws Exception {
+    public static Map<String, Sound> dayTwo() throws Exception {
+        try {
+            Map<String, Sound> soundMap = new HashMap<String, Sound>();
+
+            SoundBuffer sb;
+
+            File levelFolder = new File("sound/");
+            File[] levels = levelFolder.listFiles(new SoundFilter());
+
+            if (levels != null) {
+
+                for (File lvl : levels) {
+                    sb = new SoundBuffer();
+                    sb.loadFromFile(Paths.get(lvl.toURI()));
+
+                    soundMap.put(lvl.getName(), new Sound(sb));
+                    System.out.printf("Adding %s to sounds\n", lvl.getName());
+                }
+
+            }
+
+            return soundMap;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public static Map<String, Level> dayThree() throws Exception {
         try {
             Map<String, Level> levelMap = new HashMap<String, Level>();
             Map<Pair, Integer> enemyMap;
