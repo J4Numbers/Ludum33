@@ -29,6 +29,6 @@ public class SoundFilter implements FilenameFilter {
     @Override
     public boolean accept(File dir, String name) {
         String lname = name.toLowerCase();
-        return lname.endsWith(".ogg") || lname.endsWith(".mid");
+        return lname.endsWith(".ogg");// || lname.endsWith(".mid");
     }
 }

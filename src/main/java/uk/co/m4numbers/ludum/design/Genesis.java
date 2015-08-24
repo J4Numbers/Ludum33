@@ -89,16 +89,14 @@ public class Genesis {
         }
     }
 
-    public static Map<String, Sound> dayTwo() throws Exception {
+    public static Map<String, SoundBuffer> dayTwo() throws Exception {
         try {
-            Map<String, Sound> soundMap = new HashMap<String, Sound>();
+            Map<String, SoundBuffer> soundMap = new HashMap<String, SoundBuffer>();
 
             SoundBuffer sb;
 
-            File sound = new File("sound/");
-            //File[] sounds = levelFolder.listFiles(new SoundFilter());
-
-            File[] sounds = null;
+            File soundFolder = new File("sound/");
+            File[] sounds = soundFolder.listFiles(new SoundFilter());
 
             if (sounds != null) {
 
@@ -106,7 +104,7 @@ public class Genesis {
                     sb = new SoundBuffer();
                     sb.loadFromFile(Paths.get(snd.toURI()));
 
-                    soundMap.put(snd.getName(), new Sound(sb));
+                    soundMap.put(snd.getName(), sb);
                     System.out.printf("Adding %s to sounds\n", snd.getName());
                 }
 

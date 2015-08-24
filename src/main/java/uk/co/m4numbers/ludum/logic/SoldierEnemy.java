@@ -31,7 +31,7 @@ import java.util.Random;
 public class SoldierEnemy extends Enemy {
 
     public SoldierEnemy(Sprite actor) {
-        super(actor, TerrorEnums.NORMAL, 80, 30);
+        super(actor, TerrorEnums.NORMAL, 80, 30, "soldier_seen.ogg", "tourist_death.ogg");
     }
 
     @Override

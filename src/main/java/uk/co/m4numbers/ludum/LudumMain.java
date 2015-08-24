@@ -23,7 +23,7 @@ package uk.co.m4numbers.ludum;
  * Last Mod: 20/08/2015
  */
 
-import org.jsfml.audio.Sound;
+import org.jsfml.audio.SoundBuffer;
 import org.jsfml.graphics.*;
 
 import org.jsfml.system.Clock;
@@ -43,7 +43,7 @@ public class LudumMain {
 
     public static RenderWindow window;
     public static Map<String, Texture> textures;
-    public static Map<String, Sound> sounds;
+    public static Map<String, SoundBuffer> sounds;
     public static Map<String, Level> levels;
     public static Map<String, Font> fonts;
 
@@ -114,7 +114,7 @@ public class LudumMain {
                             fonts.get("scrawl_tmp.ttf"), 32
                     );
                     txt.setOrigin(txt.getLocalBounds().width / 2, txt.getLocalBounds().height / 2);
-                    txt.setPosition(window.getSize().x/2, window.getSize().y/2);
+                    txt.setPosition(window.getSize().x / 2, window.getSize().y / 2);
                     txt.setColor(Color.WHITE);
                     window.draw(txt);
                 }

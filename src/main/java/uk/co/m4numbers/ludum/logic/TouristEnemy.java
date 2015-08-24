@@ -15,6 +15,7 @@ package uk.co.m4numbers.ludum.logic;
  * limitations under the License.
  */
 
+import org.jsfml.audio.Sound;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.system.Vector2f;
 import uk.co.m4numbers.ludum.LudumMain;
@@ -33,7 +34,7 @@ import java.util.Random;
 public class TouristEnemy extends Enemy {
 
     public TouristEnemy(Sprite actor) {
-        super(actor, TerrorEnums.NORMAL, 80, 30);
+        super(actor, TerrorEnums.NORMAL, 80, 30, "tourist_seen.ogg", "tourist_death.ogg");
     }
 
     @Override

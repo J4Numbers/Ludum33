@@ -10,8 +10,7 @@ package uk.co.m4numbers.ludum.logic;
  */
 public enum EnemyEnums {
     TOURIST(TouristEnemy.class, 10),
-    SOILDIER(SoldierEnemy.class, 11),
-    EXTERMINATOR(ExterminatorEnemy.class, 12);
+    SOILDIER(SoldierEnemy.class, 11);
 
     public Class<?> reflector;
     public Integer texture;

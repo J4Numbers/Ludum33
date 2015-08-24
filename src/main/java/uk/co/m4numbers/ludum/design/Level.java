@@ -338,8 +338,8 @@ public class Level {
     }
 
     public void releaseEnemies(Integer key) {
-        spawnEnemy( key / 10, EnemyEnums.EXTERMINATOR);
-        spawnEnemy((key % 10) / 3, EnemyEnums.SOILDIER);
-        spawnEnemy((key % 10) % 3, EnemyEnums.TOURIST);
+        //spawnEnemy( key / 10, EnemyEnums.EXTERMINATOR);
+        spawnEnemy(key / 3, EnemyEnums.SOILDIER);
+        spawnEnemy(key % 3, EnemyEnums.TOURIST);
     }
 }

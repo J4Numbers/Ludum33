@@ -1,9 +1,9 @@
 package uk.co.m4numbers.ludum.logic;
 
+import org.jsfml.audio.Sound;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import uk.co.m4numbers.ludum.LudumMain;
-import uk.co.m4numbers.ludum.utils.ConeShape;
 import uk.co.m4numbers.ludum.utils.Line;
 
 /**
@@ -21,23 +21,37 @@ public abstract class Enemy {
     protected final float biVisAng;
 
     protected Vector2f prevMove;
-    protected ConeShape visionCone;
     protected Line visionLine;
     protected Vector2f fromTerrified;
     protected Boolean terrorChanged = false;
+
+    protected Sound seen;
+    protected Sound death;
 
     protected float moveAssist = 0;
     protected float horVel = 0;
     protected float verVel = 0;
 
-    public Enemy(Sprite actor, TerrorEnums terrorLevel, float range, float biVisAng) {
+    public Enemy(Sprite actor, TerrorEnums terrorLevel, float range, float biVisAng, String seenSound, String deathSound) {
         this.actor = actor;
         this.terrorLevel = terrorLevel;
         this.range = range;
         this.biVisAng = biVisAng;
+        this.seen = new Sound(LudumMain.sounds.get(seenSound));
+        this.death = new Sound(LudumMain.sounds.get(deathSound));
+
         this.visionLine = new Line(actor.getPosition(), actor.getPosition());
         this.prevMove = new Vector2f(0, 0);
         this.fromTerrified = new Vector2f(0, 0);
+    }
+
+    public void playSeen() {
+        if (this.seen.getPlayingOffset().asSeconds() == 0)
+            this.seen.play();
+    }
+
+    public void playDeath() {
+        this.death.play();
     }
 
     protected void calculateVision() {
@@ -71,7 +85,6 @@ public abstract class Enemy {
                 actor.getPosition(),
                 LudumMain.currentLevel.limitLine(l.getAllPoints(), actor.getPosition())
         );
-        //this.visionCone = new ConeShape(actor.getPosition(), range, rot*90, biVisAng, 31, terrorLevel);
         this.actor.setRotation(rot * 90f);
     }
 
@@ -87,8 +100,10 @@ public abstract class Enemy {
 
     public void checkSeen(FloatRect monster) {
         for (Vertex point: visionLine.getAllPoints())
-            if (monster.contains(point.position))
+            if (monster.contains(point.position)) {
+                playSeen();
                 react();
+            }
     }
 
     public void isTouching(FloatRect monster) {
@@ -126,9 +141,7 @@ public abstract class Enemy {
     }
 
     public void draw(RenderWindow w) {
-        //System.out.printf("Enemy type: %s moving to %f/%f\n", this.getClass(), actor.getPosition().x, actor.getPosition().y);
         w.draw(actor);
-        //w.draw(visionCone);
     }
 
 }

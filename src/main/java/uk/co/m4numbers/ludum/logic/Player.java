@@ -15,6 +15,7 @@ package uk.co.m4numbers.ludum.logic;
  * limitations under the License.
  */
 
+import org.jsfml.audio.Sound;
 import org.jsfml.graphics.FloatRect;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.Sprite;
@@ -39,10 +40,16 @@ public class Player {
 
     public boolean died;
 
+    //public Sound movement;
+    public Sound eating;
+
     private boolean biting = false;
     private Clock bTimer = new Clock();
 
     public Player(Sprite actor, Pair startPos) {
+        //movement = new Sound(LudumMain.sounds.get("scuttle.ogg"));
+        //movement.setLoop(true);
+        eating = new Sound(LudumMain.sounds.get("eating.ogg"));
         this.actor = actor;
         this.actor.setScale(LudumMain.scalingConst, LudumMain.scalingConst);
         this.actor.setOrigin(new Vector2f(
@@ -80,6 +87,7 @@ public class Player {
                  for (Enemy e : LudumMain.currentLevel.enemySet) {
                     if (e.actor.getGlobalBounds().intersection(this.actor.getGlobalBounds()) != null) {
                         LudumMain.currentLevel.ui.delayHealth();
+                        e.playDeath();
                         killSet.add(e);
                     }
                 }

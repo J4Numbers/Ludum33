@@ -66,6 +66,15 @@ public class KeyboardInterrupts {
                     break;
                 case SPACE:
                     LudumMain.currentLevel.player.bite();
+                    LudumMain.currentLevel.player.eating.play();
+            }
+
+            switch(ke.key) {
+                case DOWN:
+                case UP:
+                case LEFT:
+                case RIGHT:
+                    //LudumMain.currentLevel.player.movement.play();
             }
 
             if (LudumMain.verticalVelocity != 0 && LudumMain.horizontalVelocity != 0) {
@@ -113,6 +122,14 @@ public class KeyboardInterrupts {
                         LudumMain.verticalVelocity = 2;
                     }
                     break;
+            }
+
+            switch (ke.key) {
+                case UP:
+                case DOWN:
+                case RIGHT:
+                case LEFT:
+                    //LudumMain.currentLevel.player.movement.pause();
             }
         }
     }
