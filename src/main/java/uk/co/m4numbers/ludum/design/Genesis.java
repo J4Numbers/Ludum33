@@ -26,8 +26,10 @@ import uk.co.m4numbers.ludum.LudumMain;
 import uk.co.m4numbers.ludum.fileio.LudumFile;
 import uk.co.m4numbers.ludum.utils.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Sequencer;
+import java.io.*;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -226,6 +228,21 @@ public class Genesis {
         }
     }
 
+    public static Sequencer dayFive() throws Exception {
+        Sequencer sound = MidiSystem.getSequencer();
+
+        sound.open();
+
+        InputStream is = new BufferedInputStream(
+                new FileInputStream(new File("sound/drums.mid"))
+        );
+
+        sound.setSequence(is);
+        sound.setLoopStartPoint(0);
+
+        return sound;
+    }
+
     public static void daySeven() {
         LudumMain.spawn = true;
         LudumMain.stage = 1;
@@ -244,6 +261,9 @@ public class Genesis {
                 LudumMain.spawn = true;
             }
         }, 10000, 10000);
+
+        LudumMain.music.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+        LudumMain.music.start();
 
         System.out.printf("Welcome to the jungle.\n");
     }

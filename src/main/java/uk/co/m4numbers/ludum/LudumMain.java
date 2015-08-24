@@ -36,6 +36,7 @@ import uk.co.m4numbers.ludum.design.Level;
 import uk.co.m4numbers.ludum.logic.Enemy;
 import uk.co.m4numbers.ludum.logic.KeyboardInterrupts;
 
+import javax.sound.midi.Sequencer;
 import java.util.Map;
 import java.util.Timer;
 
@@ -49,6 +50,8 @@ public class LudumMain {
 
     public static final Integer scalingConst = 2;
 
+    public static Sequencer music;
+
     public static Timer spawner;
     public static Integer stage = 1;
     public static Boolean spawn = true;
@@ -61,6 +64,7 @@ public class LudumMain {
     public static Level currentLevel;
 
     public static boolean isDead = false;
+    public static boolean isPlaying = false;
 
     public static void main(String[] args) {
 
@@ -71,8 +75,9 @@ public class LudumMain {
             sounds = Genesis.dayTwo();
             levels = Genesis.dayThree();
             fonts = Genesis.dayFour();
+            music = Genesis.dayFive();
 
-            Genesis.daySeven();
+            //Genesis.daySeven();
 
             float fps;
             Text txt;
@@ -83,34 +88,48 @@ public class LudumMain {
                     KeyboardInterrupts.handleEvent(event);
 
                 window.clear();
-                Time elapse = timeSince.restart();
 
-                fps = 1.f / elapse.asSeconds();
+                if (isPlaying) {
 
-                float fpsSmoothing = 1 / (fps/60);
+                    Time elapse = timeSince.restart();
 
-                if (!isDead) {
+                    fps = 1.f / elapse.asSeconds();
 
-                    currentLevel.player.movePlayerCharacter(horizontalVelocity, verticalVelocity, fpsSmoothing);
-                    for (Enemy e : currentLevel.enemySet) {
-                        e.move(fpsSmoothing, elapse.asSeconds());
+                    float fpsSmoothing = 1 / (fps/60);
+
+                    if (!isDead) {
+
+                        currentLevel.player.movePlayerCharacter(horizontalVelocity, verticalVelocity, fpsSmoothing);
+                        for (Enemy e : currentLevel.enemySet) {
+                            e.move(fpsSmoothing, elapse.asSeconds());
+                        }
+                        currentLevel.ui.render(elapse.asSeconds());
+
+                        if (spawn) {
+                            spawn = false;
+                            currentLevel.releaseEnemies(stage);
+                            ++stage;
+                        }
+                        currentLevel.render();
+
+                    } else {
+                        spawner.cancel();
+                        if (currentLevel.player.hasJustDied()) {
+                            LudumMain.music.stop();
+                            finalTime = totalTime.getElapsedTime().asSeconds();
+                        }
+                        txt = new Text(
+                                String.format("You lasted %.2f seconds. Congrats, press R to restart", finalTime),
+                                fonts.get("scrawl_tmp.ttf"), 32
+                        );
+                        txt.setOrigin(txt.getLocalBounds().width / 2, txt.getLocalBounds().height / 2);
+                        txt.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+                        txt.setColor(Color.WHITE);
+                        window.draw(txt);
                     }
-                    currentLevel.ui.render(elapse.asSeconds());
-
-                    if (spawn) {
-                        spawn = false;
-                        currentLevel.releaseEnemies(stage);
-                        ++stage;
-                    }
-                    currentLevel.render();
-
                 } else {
-                    spawner.cancel();
-                    if (currentLevel.player.hasJustDied()) {
-                        finalTime = totalTime.getElapsedTime().asSeconds();
-                    }
                     txt = new Text(
-                            String.format("You lasted %.2f seconds. Congrats, press R to restart", finalTime),
+                            "Welcome to Get Out of my Cave, press P to start",
                             fonts.get("scrawl_tmp.ttf"), 32
                     );
                     txt.setOrigin(txt.getLocalBounds().width / 2, txt.getLocalBounds().height / 2);
@@ -122,6 +141,7 @@ public class LudumMain {
 
             }
 
+            music.stop();
             window.close();
 
         } catch (Exception e) {

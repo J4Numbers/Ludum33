@@ -52,29 +52,31 @@ public class KeyboardInterrupts {
                         Genesis.daySeven();
                     }
                     break;
+                case P:
+                    if (!LudumMain.isPlaying) {
+                        LudumMain.isPlaying = true;
+                        Genesis.daySeven();
+                    }
+                    break;
                 case DOWN:
+                case S:
                     LudumMain.verticalVelocity = 2;
                     break;
                 case UP:
+                case W:
                     LudumMain.verticalVelocity = -2;
                     break;
                 case RIGHT:
+                case D:
                     LudumMain.horizontalVelocity = 2;
                     break;
                 case LEFT:
+                case A:
                     LudumMain.horizontalVelocity = -2;
                     break;
                 case SPACE:
                     LudumMain.currentLevel.player.bite();
                     LudumMain.currentLevel.player.eating.play();
-            }
-
-            switch(ke.key) {
-                case DOWN:
-                case UP:
-                case LEFT:
-                case RIGHT:
-                    //LudumMain.currentLevel.player.movement.play();
             }
 
             if (LudumMain.verticalVelocity != 0 && LudumMain.horizontalVelocity != 0) {
@@ -94,43 +96,40 @@ public class KeyboardInterrupts {
             switch (ke.key) {
                 case UP:
                 case DOWN:
-                    if (Keyboard.isKeyPressed(Keyboard.Key.UP)) {
+                case W:
+                case S:
+                    if (Keyboard.isKeyPressed(Keyboard.Key.UP) || Keyboard.isKeyPressed(Keyboard.Key.W)) {
                         LudumMain.verticalVelocity = -2;
-                    } else if (Keyboard.isKeyPressed(Keyboard.Key.DOWN)) {
+                    } else if (Keyboard.isKeyPressed(Keyboard.Key.DOWN) || Keyboard.isKeyPressed(Keyboard.Key.S)) {
                         LudumMain.verticalVelocity = 2;
                     } else {
                         LudumMain.verticalVelocity = 0;
                     }
-                    if (Keyboard.isKeyPressed(Keyboard.Key.LEFT)) {
+                    if (Keyboard.isKeyPressed(Keyboard.Key.LEFT) || Keyboard.isKeyPressed(Keyboard.Key.A)) {
                         LudumMain.horizontalVelocity = -2;
-                    } else if (Keyboard.isKeyPressed(Keyboard.Key.RIGHT)) {
+                    } else if (Keyboard.isKeyPressed(Keyboard.Key.RIGHT) || Keyboard.isKeyPressed(Keyboard.Key.D)) {
                         LudumMain.horizontalVelocity = 2;
                     }
                     break;
                 case LEFT:
                 case RIGHT:
-                    if (Keyboard.isKeyPressed(Keyboard.Key.LEFT)) {
+                case A:
+                case D:
+                    if (Keyboard.isKeyPressed(Keyboard.Key.LEFT) || Keyboard.isKeyPressed(Keyboard.Key.A)) {
                         LudumMain.horizontalVelocity = -2;
-                    } else if (Keyboard.isKeyPressed(Keyboard.Key.RIGHT)) {
+                    } else if (Keyboard.isKeyPressed(Keyboard.Key.RIGHT) || Keyboard.isKeyPressed(Keyboard.Key.D)) {
                         LudumMain.horizontalVelocity = 2;
                     } else {
                         LudumMain.horizontalVelocity = 0;
                     }
-                    if (Keyboard.isKeyPressed(Keyboard.Key.UP)) {
+                    if (Keyboard.isKeyPressed(Keyboard.Key.UP) || Keyboard.isKeyPressed(Keyboard.Key.W)) {
                         LudumMain.verticalVelocity = -2;
-                    } else if (Keyboard.isKeyPressed(Keyboard.Key.DOWN)) {
+                    } else if (Keyboard.isKeyPressed(Keyboard.Key.DOWN) || Keyboard.isKeyPressed(Keyboard.Key.S)) {
                         LudumMain.verticalVelocity = 2;
                     }
                     break;
             }
 
-            switch (ke.key) {
-                case UP:
-                case DOWN:
-                case RIGHT:
-                case LEFT:
-                    //LudumMain.currentLevel.player.movement.pause();
-            }
         }
     }
 
