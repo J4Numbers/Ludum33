@@ -49,7 +49,7 @@ public class Genesis {
             JSONObject res = conf.getJSONObject("resolution");
             RenderWindow w = new RenderWindow(
                     new VideoMode(res.getInt("width"), res.getInt("height")),
-                    "JSFML Testing"
+                    "Get Out of My Cave"
             );
             w.clear(Color.BLACK);
 

@@ -129,7 +129,7 @@ public class LudumMain {
                     }
                 } else {
                     txt = new Text(
-                            "Welcome to Get Out of my Cave, press P to start",
+                            "Welcome to Get Out of my Cave (by M4Numbers), press P to start",
                             fonts.get("scrawl_tmp.ttf"), 32
                     );
                     txt.setOrigin(txt.getLocalBounds().width / 2, txt.getLocalBounds().height / 2);
@@ -149,6 +149,6 @@ public class LudumMain {
                     e.getMessage());
             e.printStackTrace();
         }
-
+        System.exit(0);
     }
 }

@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'uk.co.m4numbers.ludum.LudumMain'
 
 sourceCompatibility = 1.5
 version = '1.0'
@@ -16,4 +19,9 @@ dependencies {
 task execute(type:JavaExec) {
     main = 'uk.co.m4numbers.ludum.LudumMain'
     classpath = sourceSets.main.runtimeClasspath
+}
+
+jar {
+    baseName = 'OutOfMyCave'
+    version =  '0.1.0'
 }
