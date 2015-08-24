@@ -77,3 +77,5 @@ hs_err_pid*
 *.zip
 *.org
 *.aup
+
+sound/bites_data/*
