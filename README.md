@@ -16,3 +16,7 @@ file in Windows, or the OutOfMyCave file in UNIX/Mac
 
 This game was built in Java using the JSFML bindings for the SFML C++ graphics
 library.
+
+The graphics were made using Piskel  
+The midi sounds were made with Org21x  
+The other sounds were made by me and recorded in Audacity
